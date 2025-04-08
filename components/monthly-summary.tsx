@@ -10,11 +10,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { WorkEntry } from "./work-calendar";
 import { calculateHoursWorked } from "@/lib/utils";
+import { TWorkEntry } from "@/models/workEntries.model";
 
 interface MonthlySummaryProps {
-  entries: WorkEntry[];
+  entries: TWorkEntry[];
 }
 
 export function MonthlySummary({ entries }: MonthlySummaryProps) {

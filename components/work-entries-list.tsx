@@ -2,15 +2,15 @@
 
 import { Button } from "@/components/ui/button";
 import { Clock, Edit, Plus, Trash2 } from "lucide-react";
-import type { WorkEntry } from "./work-calendar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatHoursDisplay } from "@/lib/utils";
+import { TWorkEntry } from "@/models/workEntries.model";
 
 interface WorkEntriesListProps {
-  entries: WorkEntry[];
+  entries: TWorkEntry[];
   onAddEntry: () => void;
-  onEditEntry: (entry: WorkEntry) => void;
+  onEditEntry: (entry: TWorkEntry) => void;
   onDeleteEntry: (id: string) => void;
 }
 
@@ -20,6 +20,8 @@ export function WorkEntriesList({
   onEditEntry,
   onDeleteEntry,
 }: WorkEntriesListProps) {
+  console.log("🚀 ~ entries:", entries);
+
   return (
     <div className="space-y-4">
       {entries.length === 0 ? (
@@ -29,7 +31,7 @@ export function WorkEntriesList({
       ) : (
         <div className="space-y-3">
           {entries.map((entry) => (
-            <Card key={entry.id} className="overflow-hidden">
+            <Card key={entry._id} className="overflow-hidden">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
@@ -58,7 +60,7 @@ export function WorkEntriesList({
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => onDeleteEntry(entry.id)}
+                      onClick={() => onDeleteEntry(entry._id)}
                     >
                       <Trash2 className="h-4 w-4" />
                       <span className="sr-only">Delete</span>

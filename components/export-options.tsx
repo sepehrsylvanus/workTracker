@@ -9,11 +9,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { WorkEntry } from "./work-calendar";
 import { formatWorkEntriesForExport } from "@/lib/utils";
+import { TWorkEntry } from "@/models/workEntries.model";
 
 interface ExportOptionsProps {
-  entries: WorkEntry[];
+  entries: TWorkEntry[];
   month?: Date;
 }
 

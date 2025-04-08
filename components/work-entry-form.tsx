@@ -7,12 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import type { WorkEntry } from "./work-calendar";
+import { TWorkEntry } from "@/models/workEntries.model";
 
 interface WorkEntryFormProps {
   date: Date;
-  entry?: WorkEntry | null;
-  onSave: (entry: WorkEntry) => void;
+  entry?: TWorkEntry | null;
+  onSave: (entry: TWorkEntry) => void;
   onCancel: () => void;
 }
 
@@ -29,8 +29,8 @@ export function WorkEntryForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const newEntry: WorkEntry = {
-      id: entry?.id ?? Date.now().toString(),
+    const newEntry: TWorkEntry = {
+      _id: entry?._id ?? "",
       date: date,
       isFullTime,
       startTime,
