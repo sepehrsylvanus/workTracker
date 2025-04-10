@@ -9,18 +9,21 @@ import { WorkEntryForm } from "./work-entry-form";
 import { WorkEntriesList } from "./work-entries-list";
 import {
   useAddEntries,
+  useDeleteAllEntries,
   useDeleteEntry,
   useGetEntries,
   useUpdateEntry,
 } from "@/hooks/useWorkEntries";
 import { TWorkEntry } from "@/models/workEntries.model";
 import { LucideLoader } from "lucide-react";
+import { DeleteAllButton } from "./delete-all-button";
 
 export function WorkCalendar() {
   const { data: workEntries, isLoading: entriesLoading } = useGetEntries();
   const { mutate: addEntries } = useAddEntries();
   const { mutate: updateEntry } = useUpdateEntry();
   const { mutate: deleteEntry } = useDeleteEntry();
+  const { mutate: handleDeleteAll } = useDeleteAllEntries();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     new Date()
   );
@@ -99,6 +102,10 @@ export function WorkCalendar() {
                   )}
                 </h2>
                 <ExportOptions entries={workEntries ?? []} />
+                <DeleteAllButton
+                  onDeleteAll={handleDeleteAll}
+                  disabled={workEntries?.length === 0}
+                />
               </div>
 
               {selectedDate && (

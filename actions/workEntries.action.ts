@@ -80,3 +80,12 @@ export const deleteEntry = async (id: string) => {
     throw new Error(error.message);
   }
 };
+export const deleteAllEntries = async () => {
+  try {
+    await connectToDB();
+    await WorkEntry.deleteMany({});
+  } catch (error: any) {
+    console.error(error.message);
+    throw new Error(error.message);
+  }
+};

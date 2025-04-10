@@ -1,5 +1,6 @@
 import {
   AddEntries,
+  deleteAllEntries,
   deleteEntry,
   getWorkEntries,
   updateEntry,
@@ -51,6 +52,21 @@ export const useDeleteEntry = () => {
   return useMutation({
     mutationFn: async (id: string) => {
       await deleteEntry(id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["getEntries"],
+      });
+    },
+  });
+};
+
+export const useDeleteAllEntries = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      await deleteAllEntries();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
