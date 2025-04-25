@@ -12,7 +12,7 @@ export const AddEntries = async ({
   isFullTime,
   startTime,
   endTime,
-}: TWorkEntry) => {
+}: Omit<TWorkEntry, "user">) => {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get("token")?.value;
@@ -68,7 +68,7 @@ export const updateEntry = async ({
   entry,
 }: {
   id: string;
-  entry: TWorkEntry;
+  entry: Omit<TWorkEntry, "user">;
 }) => {
   try {
     await connectToDB();

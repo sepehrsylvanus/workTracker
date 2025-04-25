@@ -66,13 +66,13 @@ export function WorkCalendar() {
       })
     : [];
 
-  const handleAddEntry = (entry: TWorkEntry) => {
+  const handleAddEntry = (entry: Omit<TWorkEntry, "user">) => {
     console.log("hello");
     addEntries(entry);
     setIsAddingEntry(false);
   };
 
-  const handleUpdateEntry = (updatedEntry: TWorkEntry) => {
+  const handleUpdateEntry = (updatedEntry: Omit<TWorkEntry, "user">) => {
     const dataToUpdate = {
       id: updatedEntry._id,
       entry: updatedEntry,

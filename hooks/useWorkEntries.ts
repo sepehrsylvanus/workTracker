@@ -20,7 +20,7 @@ export const useGetEntries = () => {
 export const useAddEntries = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (workEntry: TWorkEntry) => {
+    mutationFn: async (workEntry: Omit<TWorkEntry, "user">) => {
       await AddEntries(workEntry);
     },
     onSuccess: () => {
@@ -35,7 +35,10 @@ export const useUpdateEntry = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: { id: string; entry: TWorkEntry }) => {
+    mutationFn: async (data: {
+      id: string;
+      entry: Omit<TWorkEntry, "user">;
+    }) => {
       await updateEntry(data);
     },
     onSuccess: () => {

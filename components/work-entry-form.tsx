@@ -11,8 +11,8 @@ import { TWorkEntry } from "@/models/workEntries.model";
 
 interface WorkEntryFormProps {
   date: Date;
-  entry?: TWorkEntry | null;
-  onSave: (entry: TWorkEntry) => void;
+  entry?: Omit<TWorkEntry, "user"> | null;
+  onSave: (entry: Omit<TWorkEntry, "user">) => void;
   onCancel: () => void;
 }
 
@@ -29,7 +29,7 @@ export function WorkEntryForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const newEntry: TWorkEntry = {
+    const newEntry: Omit<TWorkEntry, "user"> = {
       _id: entry?._id ?? "",
       date: date,
       isFullTime,
