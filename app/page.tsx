@@ -1,9 +1,34 @@
+"use client";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { WorkCalendar } from "@/components/work-calendar";
-
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 export default function Home() {
+  const router = useRouter();
+  const handleLogout = () => {
+    Cookies.remove("token");
+    router.refresh();
+  };
   return (
     <main className="container mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold mb-6">Work Schedule Tracker</h1>
+      <div className="flex justify-between px-7">
+        <h1 className="text-3xl font-bold mb-6">Work Schedule Tracker</h1>
+        <Popover>
+          <PopoverTrigger>
+            <p className="text-gray-600 text-2xl">Sepehr</p>
+          </PopoverTrigger>
+          <PopoverContent className="w-fit">
+            <Button variant={"destructive"} onClick={() => handleLogout()}>
+              Logout
+            </Button>
+          </PopoverContent>
+        </Popover>
+      </div>
       <WorkCalendar />
     </main>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
 import { ExportOptions } from "./export-options";
@@ -17,9 +17,36 @@ import {
 import { TWorkEntry } from "@/models/workEntries.model";
 import { LucideLoader } from "lucide-react";
 import { DeleteAllButton } from "./delete-all-button";
-
+import Cookies from "js-cookie";
+import { verifyToken } from "@/lib/helperFunctions";
+import { WORK_API } from "@/lib/AXIOS";
+import { TUser } from "@/models/user.model";
+import { toast } from "react-toastify";
 export function WorkCalendar() {
-  const { data: workEntries, isLoading: entriesLoading } = useGetEntries();
+  const token = Cookies.get("token");
+  const [user, setUser] = useState<TUser>();
+  const [userLoading, setUserLoading] = useState(true);
+  useEffect(() => {
+    const func = async () => {
+      const tokenPayload = await verifyToken(token!);
+      console.log("🚀 ~ func ~ tokenPayload:", tokenPayload);
+      if (!tokenPayload) return null;
+      WORK_API.get(`/user/${tokenPayload.id}`)
+        .then((res) => {
+          setUser(res.data.safeUser);
+          setUserLoading(false);
+        })
+        .catch((err) => {
+          toast.error(err.response.data);
+          setUserLoading(false);
+        });
+    };
+    func();
+  }, []);
+
+  console.log("🚀 ~ WorkCalendar ~ token:", token);
+
+  console.log("🚀 ~ WorkCalendar ~ user:", user);
   const { mutate: addEntries } = useAddEntries();
   const { mutate: updateEntry } = useUpdateEntry();
   const { mutate: deleteEntry } = useDeleteEntry();
@@ -32,9 +59,11 @@ export function WorkCalendar() {
   const [editingEntry, setEditingEntry] = useState<TWorkEntry | null>(null);
 
   const entriesForSelectedDate = selectedDate
-    ? workEntries?.filter(
-        (entry) => entry.date.toDateString() === selectedDate.toDateString()
-      )
+    ? user?.workEntries?.filter((entry) => {
+        return (
+          new Date(entry.date).toDateString() === selectedDate.toDateString()
+        );
+      })
     : [];
 
   const handleAddEntry = (entry: TWorkEntry) => {
@@ -61,14 +90,14 @@ export function WorkCalendar() {
 
   // Function to highlight dates with work entries
   const isDayWithEntry = (date: Date) => {
-    if (!workEntries) return;
+    if (!user?.workEntries) return;
 
-    return workEntries.some(
-      (entry) => entry.date.toDateString() === date.toDateString()
+    return user.workEntries.some(
+      (entry) => new Date(entry.date).toDateString() === date.toDateString()
     );
   };
 
-  if (entriesLoading) {
+  if (userLoading) {
     return <LucideLoader className="animate-spin" />;
   } else {
     return (
@@ -101,10 +130,10 @@ export function WorkCalendar() {
                     <>Select a date</>
                   )}
                 </h2>
-                <ExportOptions entries={workEntries ?? []} />
+                <ExportOptions entries={user?.workEntries ?? []} />
                 <DeleteAllButton
                   onDeleteAll={handleDeleteAll}
-                  disabled={workEntries?.length === 0}
+                  disabled={user?.workEntries?.length === 0}
                 />
               </div>
 
@@ -135,7 +164,7 @@ export function WorkCalendar() {
               )}
             </CardContent>
           </Card>
-          <MonthlySummary entries={workEntries ?? []} />
+          <MonthlySummary entries={user?.workEntries ?? []} />
         </div>
       </div>
     );

@@ -1,7 +1,11 @@
 "use server";
 
 import { connectToDB } from "@/lib/connectToDB";
+import { verifyToken } from "@/lib/helperFunctions";
+import User from "@/models/user.model";
 import WorkEntry, { TWorkEntry } from "@/models/workEntries.model";
+import mongoose from "mongoose";
+import { cookies } from "next/headers";
 
 export const AddEntries = async ({
   date,
@@ -10,13 +14,23 @@ export const AddEntries = async ({
   endTime,
 }: TWorkEntry) => {
   try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
+    const tokenPayload = (await verifyToken(token!)) as { id: string };
+
     await connectToDB();
-    await WorkEntry.create({
+    const newWorkEntry = await WorkEntry.create({
       date,
       isFullTime,
       startTime,
       endTime,
     });
+    await User.findByIdAndUpdate(tokenPayload.id, {
+      $push: {
+        workEntries: newWorkEntry._id,
+      },
+    });
+
     return "Work Entry added successfully";
   } catch (error: any) {
     console.error(error.message);
@@ -73,7 +87,14 @@ export const deleteEntry = async (id: string) => {
   try {
     console.log("delete");
     await connectToDB();
-
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
+    const tokenPayload = (await verifyToken(token!)) as { id: string };
+    await User.findByIdAndUpdate(tokenPayload.id, {
+      $pull: {
+        workEntries: new mongoose.Types.ObjectId(id),
+      },
+    });
     await WorkEntry.findByIdAndDelete(id);
   } catch (error: any) {
     console.error(error.message);
@@ -83,6 +104,14 @@ export const deleteEntry = async (id: string) => {
 export const deleteAllEntries = async () => {
   try {
     await connectToDB();
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
+    const tokenPayload = (await verifyToken(token!)) as { id: string };
+    await User.findByIdAndUpdate(tokenPayload.id, {
+      $set: {
+        workEntries: [],
+      },
+    });
     await WorkEntry.deleteMany({});
   } catch (error: any) {
     console.error(error.message);
