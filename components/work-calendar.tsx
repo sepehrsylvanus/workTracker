@@ -39,7 +39,8 @@ export function WorkCalendar() {
         .catch((err) => {
           toast.error(err.response.data);
           setUserLoading(false);
-        });
+        })
+        .finally(() => setUserLoading(false));
     };
     func();
   }, []);

@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 // Format work entries for export
 export function formatWorkEntriesForExport(entries: TWorkEntry[]) {
   return entries.map((entry) => ({
-    Date: entry.date.toLocaleDateString(),
+    Date: new Date(entry.date).toLocaleDateString(),
     Type: entry.isFullTime ? "Full-time" : "Part-time",
     "Start Time": entry.startTime,
     "End Time": entry.endTime,

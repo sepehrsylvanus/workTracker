@@ -2,6 +2,7 @@ import { jwtVerify } from "jose";
 import Cookies from "js-cookie";
 import jwt from "jsonwebtoken";
 export const verifyToken = async (token: string) => {
+  console.log("🚀 ~ verifyToken ~ token:", token);
   if (!token) return false;
   try {
     const secret = new TextEncoder().encode(process.env.NEXT_PUBLIC_API_KEY!);

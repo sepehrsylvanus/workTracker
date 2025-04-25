@@ -30,10 +30,7 @@ export const POST = async (req: NextRequest) => {
       { message: `User ${newUser.name} created successfully`, user: newUser },
       { status: 201 }
     );
-    res.cookies.set("token", token, {
-      httpOnly: true,
-      secure: true,
-    });
+    res.cookies.set("token", token);
     return res;
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
