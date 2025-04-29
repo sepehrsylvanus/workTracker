@@ -24,8 +24,8 @@ export const useAddEntries = () => {
       await AddEntries(workEntry);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["getEntries"],
+      queryClient.refetchQueries({
+        queryKey: ["getUser"],
       });
     },
   });
@@ -42,8 +42,8 @@ export const useUpdateEntry = () => {
       await updateEntry(data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["getEntries"],
+      queryClient.refetchQueries({
+        queryKey: ["getUser"],
       });
     },
   });
@@ -57,8 +57,8 @@ export const useDeleteEntry = () => {
       await deleteEntry(id);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["getEntries"],
+      queryClient.refetchQueries({
+        queryKey: ["getUser"],
       });
     },
   });
@@ -72,8 +72,8 @@ export const useDeleteAllEntries = () => {
       await deleteAllEntries();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["getEntries"],
+      queryClient.refetchQueries({
+        queryKey: ["getUser"],
       });
     },
   });

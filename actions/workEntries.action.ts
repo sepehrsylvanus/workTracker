@@ -6,6 +6,7 @@ import User from "@/models/user.model";
 import WorkEntry, { TWorkEntry } from "@/models/workEntries.model";
 import mongoose from "mongoose";
 import { cookies } from "next/headers";
+import { getUser } from "./user.action";
 
 export const AddEntries = async ({
   date,
@@ -70,12 +71,21 @@ export const updateEntry = async ({
   id: string;
   entry: Omit<TWorkEntry, "user">;
 }) => {
+  const user = await getUser();
   try {
     await connectToDB();
 
-    await WorkEntry.findByIdAndUpdate(id, entry, {
+    const newWorkEntry = await WorkEntry.findByIdAndUpdate(id, entry, {
       new: true,
       overwrite: true,
+    });
+    await User.findByIdAndUpdate(user._id, {
+      $pull: {
+        workEntries: new mongoose.Types.ObjectId(id),
+      },
+      $push: {
+        workEntries: newWorkEntry._id,
+      },
     });
   } catch (error: any) {
     console.error(error.message);

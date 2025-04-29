@@ -22,32 +22,10 @@ import { verifyToken } from "@/lib/helperFunctions";
 import { WORK_API } from "@/lib/AXIOS";
 import { TUser } from "@/models/user.model";
 import { toast } from "react-toastify";
+import { useGetUser } from "@/hooks/useUser";
 export function WorkCalendar() {
-  const token = Cookies.get("token");
-  const [user, setUser] = useState<TUser>();
-  const [userLoading, setUserLoading] = useState(true);
-  useEffect(() => {
-    const func = async () => {
-      const tokenPayload = await verifyToken(token!);
-      console.log("🚀 ~ func ~ tokenPayload:", tokenPayload);
-      if (!tokenPayload) return null;
-      WORK_API.get(`/user/${tokenPayload.id}`)
-        .then((res) => {
-          setUser(res.data.safeUser);
-          setUserLoading(false);
-        })
-        .catch((err) => {
-          toast.error(err.response.data);
-          setUserLoading(false);
-        })
-        .finally(() => setUserLoading(false));
-    };
-    func();
-  }, []);
+  const { data: user, isLoading: userLoading } = useGetUser();
 
-  console.log("🚀 ~ WorkCalendar ~ token:", token);
-
-  console.log("🚀 ~ WorkCalendar ~ user:", user);
   const { mutate: addEntries } = useAddEntries();
   const { mutate: updateEntry } = useUpdateEntry();
   const { mutate: deleteEntry } = useDeleteEntry();
